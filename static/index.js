@@ -71,7 +71,7 @@ function initMap() {
             data.forEach(marker => {
                 addMarker({
                     coordinates: { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) },
-                    content: generateDescription(marker.name, '', marker.contact), 
+                    content: generateDescription(marker.name, '', marker.contact),
                     type: marker.type
                 });
             });
@@ -124,5 +124,22 @@ function initMap() {
         const form = document.getElementById('marker-form');
         form.dataset.lat = event.latLng.lat();
         form.dataset.lng = event.latLng.lng();
+    });
+
+    // Drawing Circles for example
+    addCircle({ lat: 40.37576160347162, lng: 49.88207512593167 }, 1000, '#00FF0055');
+    addCircle({ lat: 40.36576160347162, lng: 49.85207512593167 }, 500, '#0000FF55');
+}
+
+function addCircle(position, radius, color) {
+    new google.maps.Circle({
+        strokeColor: color,
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: color,
+        fillOpacity: 0.35,
+        map,
+        center: position,
+        radius: radius
     });
 }
