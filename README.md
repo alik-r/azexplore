@@ -6,3 +6,7 @@ azexplore primarily focuses on enabling users to find, explore, connect, and sup
 - Backend: Golang
 - Database: SQLite
 - APIs: Google Maps and Geocoding API
+## Usage
+To use the application, run:
+`go run main.go`
+Then open `localhost:8080` in your browser.
