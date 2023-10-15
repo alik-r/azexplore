@@ -78,17 +78,45 @@ function initMap() {
         document.getElementById('marker-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const name = document.getElementById('name').value;
-            // const address = document.getElementById('address').value;
             const contact = document.getElementById('contact').value;
             const type = document.getElementById('type').value;
+            // getAddressFromCoordinates(event.latLng.lat(), event.latLng.lng())
+            //     .then(address => {
+            //         addMarker({
+            //             coordinates: event.latLng,
+            //             content: generateDescription(name, address, contact),
+            //             type: type
+            //         });
+            //         closeModal();
+            //     })
+            //     .catch(error => console.error(error));
             getAddressFromCoordinates(event.latLng.lat(), event.latLng.lng())
                 .then(address => {
-                    addMarker({
-                        coordinates: event.latLng,
-                        content: generateDescription(name, address, contact),
-                        type: type
-                    });
-                    closeModal();
+                    const markerData = {
+                        name,
+                        contact,
+                        type,
+                        lat: event.latLng.lat(),
+                        lng: event.latLng.lng()
+                    };
+                    fetch('/add_marker', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(markerData)
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                addMarker({
+                                    coordinates: event.latLng,
+                                    content: generateDescription(name, address, contact),
+                                    type: type
+                                });
+                                closeModal();
+                            } else {
+                                console.error('Failed to add marker');
+                            }
+                        })
+                        .catch(error => console.error(error));
                 })
                 .catch(error => console.error(error));
         });
