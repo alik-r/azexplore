@@ -1,18 +1,5 @@
 let map;
 
-const markers = [
-    {
-        coordinates: { lat: 40.377697640402936, lng: 49.85247745722226 },
-        content: generateDescription("Pushkin Kafe", "Pushkin kucesi", "pushkinkafe.az"),
-        type: 'cafe'
-    },
-    {
-        coordinates: { lat: 40.978185553273484, lng: 47.845415320149314 },
-        content: generateDescription("Qabala El ishleri", "Street", "Tel: 0507009090"),
-        type: 'shop'
-    }
-]
-
 function generateDescription(name, address, contact) {
     return `<div class="description">
         <h3>${name}</h2>
@@ -73,6 +60,26 @@ function initMap() {
         options,
     )
 
+    fetch('/get_markers')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error:' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.forEach(marker => {
+                addMarker({
+                    coordinates: { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) },
+                    content: generateDescription(marker.name, '', marker.contact), 
+                    type: marker.type
+                });
+            });
+        })
+        .catch((error) => {
+            console.error('Fetch error: ', error);
+        });
+
     document.getElementById('marker-form').addEventListener('submit', function (e) {
         e.preventDefault();
         const name = document.getElementById('name').value;
@@ -118,8 +125,4 @@ function initMap() {
         form.dataset.lat = event.latLng.lat();
         form.dataset.lng = event.latLng.lng();
     });
-
-    for (let i = 0; i < markers.length; i++) {
-        addMarker(markers[i])
-    }
 }

@@ -42,7 +42,6 @@ func setupDB() (*sql.DB, error) {
 
 func addMarkerHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5500")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		if r.Method != http.MethodPost {
@@ -66,15 +65,44 @@ func addMarkerHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
+func getMarkersHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
+		rows, err := db.Query("SELECT name, contact, type, latitude, longitude FROM markers")
+		if err != nil {
+			http.Error(w, "Failed to query database", http.StatusInternalServerError)
+			return
+		}
+		defer rows.Close()
+
+		var markers []Marker
+		for rows.Next() {
+			var m Marker
+			if err := rows.Scan(&m.Name, &m.Contact, &m.Type, &m.Latitude, &m.Longitude); err != nil {
+				http.Error(w, "Failed to scan row", http.StatusInternalServerError)
+				return
+			}
+			markers = append(markers, m)
+		}
+
+		if err := json.NewEncoder(w).Encode(markers); err != nil {
+			http.Error(w, "Failed to encode markers", http.StatusInternalServerError)
+		}
+	}
+}
+
 func main() {
 	db, err := setupDB()
 	if err != nil {
 		log.Fatal("Cannot setup database: ", err)
 	}
 
-	http.HandleFunc("/add_marker", addMarkerHandler(db))
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/", fs)
+	http.HandleFunc("/add_marker", addMarkerHandler(db))
+	http.HandleFunc("/get_markers", getMarkersHandler(db))
 
 	fmt.Println("Server running on port 8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
