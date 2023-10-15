@@ -102,8 +102,6 @@ body {
 
 .info-map-container {
     padding: 20px 12px;
-    display: flex;
-    gap: 20px;
 }
 
 .info-container {
