@@ -73,53 +73,50 @@ function initMap() {
         options,
     )
 
+    document.getElementById('marker-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const contact = document.getElementById('contact').value;
+        const type = document.getElementById('type').value;
+        // Retrieve the saved coordinates from dataset attributes
+        const lat = parseFloat(this.dataset.lat);
+        const lng = parseFloat(this.dataset.lng);
+        getAddressFromCoordinates(lat, lng)
+            .then(address => {
+                addMarker({
+                    coordinates: { lat, lng },
+                    content: generateDescription(name, address, contact),
+                    type: type
+                });
+                closeModal();
+                // Send marker data to the server
+                const markerData = {
+                    name,
+                    contact,
+                    type,
+                    lat,
+                    lng
+                };
+                fetch('/add_marker', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(markerData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error('Failed to add marker');
+                        }
+                    })
+                    .catch(error => console.error(error));
+            })
+            .catch(error => console.error(error));
+    });
+
     google.maps.event.addListener(map, 'rightclick', function (event) {
         document.getElementById('marker-modal').style.display = 'flex';
-        document.getElementById('marker-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const contact = document.getElementById('contact').value;
-            const type = document.getElementById('type').value;
-            // getAddressFromCoordinates(event.latLng.lat(), event.latLng.lng())
-            //     .then(address => {
-            //         addMarker({
-            //             coordinates: event.latLng,
-            //             content: generateDescription(name, address, contact),
-            //             type: type
-            //         });
-            //         closeModal();
-            //     })
-            //     .catch(error => console.error(error));
-            getAddressFromCoordinates(event.latLng.lat(), event.latLng.lng())
-                .then(address => {
-                    const markerData = {
-                        name,
-                        contact,
-                        type,
-                        lat: event.latLng.lat(),
-                        lng: event.latLng.lng()
-                    };
-                    fetch('/add_marker', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(markerData)
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                addMarker({
-                                    coordinates: event.latLng,
-                                    content: generateDescription(name, address, contact),
-                                    type: type
-                                });
-                                closeModal();
-                            } else {
-                                console.error('Failed to add marker');
-                            }
-                        })
-                        .catch(error => console.error(error));
-                })
-                .catch(error => console.error(error));
-        });
+        const form = document.getElementById('marker-form');
+        form.dataset.lat = event.latLng.lat();
+        form.dataset.lng = event.latLng.lng();
     });
 
     for (let i = 0; i < markers.length; i++) {
