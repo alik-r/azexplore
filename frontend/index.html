@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>azexplore</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_A9E-LevhVHc4-6W9xPOwn-t2GiPC6mw&callback=initMap"
+        async defer></script>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo"><a href="/">azexplore</a></div>
+            <nav class="navbar">
+                <ul class="navlist">
+                    <li class="navitem"><a href="#">Log In</a></li>
+                    <li class="navitem"><a href="#">Sign Up</a></li>
+                    <li class="navitem"><a href="#">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" style="background-image: url('hero-banner.jpeg');">
+            <div class="hero-content">
+                <h1 class="hero-title">azexplore</h1>
+                <p class="hero-text">Explore, Connect, and Support Local Businesses Around You.</p>
+            </div>
+        </section>
+
+        <section class="info-map-container">
+            <div class="info-container">
+                <!-- Add your category items here with corresponding background images -->
+                <div class="info-item" style="background-image: url('cafe.jpeg');">
+                    <h2>Cafes</h2>
+                </div>
+                <div class="info-item" style="background-image: url('handmades.jpeg');">
+                    <h2>Shops</h2>
+                </div>
+                <div class="info-item" style="background-image: url('hostel.jpeg');">
+                    <h2>Hostels</h2>
+                </div>
+            </div>
+            <div id="map">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 UFAZ-2 Team</p>
+    </footer>
+
+    <div id="marker-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2>Add a new marker</h2>
+            <form id="marker-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br><br>
+                <label for="contact">Contact:</label>
+                <input type="text" id="contact" name="contact" required><br><br>
+                <label for="type">Type:</label>
+                <select id="type" name="type" required>
+                    <option value="cafe">Cafe</option>
+                    <option value="hostel">Hostel</option>
+                    <option value="shop">Shop</option>
+                </select><br><br>
+                <input type="submit" value="Add Marker">
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
