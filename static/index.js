@@ -85,7 +85,6 @@ function initMap() {
         const name = document.getElementById('name').value;
         const contact = document.getElementById('contact').value;
         const type = document.getElementById('type').value;
-        // Retrieve the saved coordinates from dataset attributes
         const lat = parseFloat(this.dataset.lat);
         const lng = parseFloat(this.dataset.lng);
         getAddressFromCoordinates(lat, lng)
@@ -126,7 +125,7 @@ function initMap() {
         form.dataset.lng = event.latLng.lng();
     });
 
-    // Drawing Circles for example
+    // Drawing Circles for examples
     addCircle({ lat: 40.37576160347162, lng: 49.88207512593167 }, 1000, '#00FF0055');
     addCircle({ lat: 40.36576160347162, lng: 49.85207512593167 }, 500, '#0000FF55');
 }
