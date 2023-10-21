@@ -10,7 +10,7 @@ function generateDescription(name, address, contact) {
 
 function getAddressFromCoordinates(lat, lng) {
     return new Promise((resolve, reject) => {
-        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyBAam1-N8XaMEclySMIukWVFkl4r1yf0n4`;
+        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=<Your Google Maps API KEY>`;
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
@@ -95,6 +95,7 @@ function initMap() {
                     type: type
                 });
                 closeModal();
+                
                 // Send marker data to the server
                 const markerData = {
                     name,
